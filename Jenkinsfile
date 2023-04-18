@@ -3,8 +3,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout your source code from your version control system
-                git 'https://github.com/your-username/your-repo.git'
+                git branch: 'main',
+                    url: 'https://github.com/markza1998/team-generator.git'
             }
         }
         stage('Unit Test') {
