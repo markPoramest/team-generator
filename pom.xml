@@ -55,13 +55,6 @@
 
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>team-generator</id>
-            <name>team-generator</name>
-        </repository>
-    </distributionManagement>
-
     <build>
         <plugins>
             <plugin>
