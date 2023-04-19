@@ -27,7 +27,7 @@ pipeline {
             steps {
                 // Deploy your Spring Boot application to AWS
                 echo 'Deploying to AWS'
-                sh 'mvn clean deploy'
+                java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar
             }
         }
     }
