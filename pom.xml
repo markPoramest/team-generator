@@ -59,7 +59,6 @@
         <repository>
             <id>team-generator</id>
             <name>team-generator</name>
-            <url>https://github.com/markza1998/team-generator</url>
         </repository>
     </distributionManagement>
 
