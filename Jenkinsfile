@@ -1,5 +1,11 @@
 pipeline {
     agent any
+     environment {
+        DOCKER_IMAGE_NAME = 'team-generator'
+        DOCKER_REGISTRY_URL = 'your-docker-registry-url'
+        DOCKER_REGISTRY_CREDENTIALS = 'docker-registry-credentials-id'
+        DOCKER_IMAGE_TAG = "latest-${env.BUILD_NUMBER}"
+      }
     stages {
         stage('Checkout') {
             steps {
@@ -23,12 +29,8 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-        stage('Deploy') {
-            steps {
-                // Deploy your Spring Boot application to AWS
-                echo 'Deploying to AWS'
-                sh 'java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar'
-            }
+        stage("Deployment") {
+            sh 'nohup ./mvnw spring-boot:run -Dserver.port=8001 &'
         }
     }
 }
