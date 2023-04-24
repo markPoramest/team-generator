@@ -30,7 +30,9 @@ pipeline {
             }
         }
         stage("Deployment") {
+            steps {
             sh 'nohup ./mvnw spring-boot:run -Dserver.port=8443 &'
+            }
         }
     }
 }
