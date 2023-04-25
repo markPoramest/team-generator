@@ -32,8 +32,8 @@ pipeline {
         stage("Deployment") {
             steps {
             echo "Killing the process"
-            sh 'sudo lsof -i :8433'
-            sh 'sudo kill -9 `sudo lsof -t -i:8433`'
+            sh 'sudo -nS lsof -i :8433'
+            sh 'sudo -nS kill -9 `sudo -nS lsof -t -i:8433`'
             echo 'start spring boot'
             sh 'nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
             }
