@@ -31,7 +31,7 @@ pipeline {
         }
         stage("Deployment") {
             steps {
-            sh 'kill -9 $(sudo lsof -t -i:8443)'
+            sh 'kill -9 $(lsof -t -i:8443)'
             sh 'nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
             }
         }
