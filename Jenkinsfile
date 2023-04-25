@@ -31,7 +31,8 @@ pipeline {
         }
         stage("Deployment") {
             steps {
-            sh 'nohup ./mvnw spring-boot:run -Dserver.port=8443 &'
+            sh 'kill -9 $(sudo lsof -t -i:8443)'
+            sh 'nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
             }
         }
     }
