@@ -32,7 +32,7 @@ pipeline {
         stage("Deployment") {
             steps {
             echo "Killing the process"
-            sh 'sudo kill -9 $(sudo lsof -t -i:8443)'
+            sh 'sudo -S kill -9 $(sudo lsof -t -i:8443)'
             echo 'start spring boot'
             sh 'nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
             }
