@@ -29,8 +29,19 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-        stage("Deployment") {
-            steps {
+        stage("Deploy") {
+             steps {
+                    script {
+                        def pid = sh(
+                            script: 'sudo -nS lsof -t -i:8433',
+                            returnStdout: true
+                        ).trim()
+                        if (pid != "") {
+                            sh 'sudo -nS kill -9 $pid'
+                        } else {
+                            echo 'No process found on port 8433'
+                        }
+                    }
             echo "Killing the process"
             sh 'sudo -nS lsof -i :8433 || true'
             sh 'sudo -nS kill -9 `sudo -nS lsof -t -i:8433` || true'
