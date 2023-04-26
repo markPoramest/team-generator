@@ -35,7 +35,7 @@ pipeline {
             sh 'sudo -nS lsof -i :8433 || true'
             sh 'sudo -nS kill -9 `sudo -nS lsof -t -i:8433` || true'
             echo 'start spring boot'
-            sh 'nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
+            sh 'sudo nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
             }
         }
     }
