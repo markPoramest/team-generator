@@ -38,22 +38,16 @@ pipeline {
             sh 'sudo nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
             }
         }
-        stage('Health check') {
-            steps {
-                script {
-                    // Wait for the application to start
-                    sleep 30
-
-                    // Check if the application is running
-                    def response = sh(
-                        script: 'curl -I http://localhost:8443/health',
-                        returnStdout: true
-                    )
-
-                    if (response.contains('HTTP/1.1 200 OK')) {
-                        echo 'Application is running'
-                    } else {
-                        error 'Application failed to start'
+        stage('Health Check') {
+            timeout(time: 5, unit: 'MINUTES') {
+                steps {
+                    script {
+                        def response = sh(script: 'curl -sSf http://localhost:8443/health', returnStdout: true)
+                        if (response.contains('UP')) {
+                            echo 'Application is up and running'
+                        } else {
+                            error 'Application is not responding'
+                        }
                     }
                 }
             }
