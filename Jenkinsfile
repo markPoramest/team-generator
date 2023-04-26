@@ -29,24 +29,33 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-        stage("Deploy") {
-             steps {
-                    script {
-                        def pid = sh(
-                            script: 'sudo -nS lsof -t -i:8433',
-                            returnStdout: true
-                        ).trim()
-                        if (pid != "") {
-                            sh 'sudo -nS kill -9 $pid'
-                        } else {
-                            echo 'No process found on port 8433'
-                        }
-                    }
+        stage("Deployment") {
+            steps {
             echo "Killing the process"
             sh 'sudo -nS lsof -i :8433 || true'
             sh 'sudo -nS kill -9 `sudo -nS lsof -t -i:8433` || true'
             echo 'start spring boot'
             sh 'sudo nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
+            }
+        }
+        stage('Health check') {
+            steps {
+                script {
+                    // Wait for the application to start
+                    sleep 30
+
+                    // Check if the application is running
+                    def response = sh(
+                        script: 'curl -I http://localhost:8443/health',
+                        returnStdout: true
+                    )
+
+                    if (response.contains('HTTP/1.1 200 OK')) {
+                        echo 'Application is running'
+                    } else {
+                        error 'Application failed to start'
+                    }
+                }
             }
         }
     }
