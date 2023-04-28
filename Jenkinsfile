@@ -40,15 +40,16 @@ pipeline {
         }
         stage('Health Check') {
             steps {
-                timeout(time: 5, unit: 'MINUTES') {
+                 retry(5){
                     script {
                         def ipAddress = sh(script: 'curl -sSf http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
-                        def response = sh(script: "curl -sSf http://${ipAddress}:8080/health", returnStdout: true)
+                        def response = sh(script: "curl -sSf http://${ipAddress}:8443/health", returnStdout: true)
                         if (response.contains('UP')) {
                             echo 'Application is up and running'
                         } else {
                             error 'Application is not responding'
                         }
+                        sleep 30
                     }
                 }
             }
