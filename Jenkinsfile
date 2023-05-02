@@ -49,7 +49,7 @@ pipeline {
                         } else {
                             error 'Application is not responding'
                         }
-                        sleep 30
+                        sleep 30000
                     }
                 }
             }
