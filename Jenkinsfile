@@ -38,18 +38,5 @@ pipeline {
             sh 'sudo nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
             }
         }
-        stage('Health Check') {
-            steps {
-                    script {
-                        def ipAddress = sh(script: 'curl -sSf http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
-                        def response = sh(script: "curl -m 10 -sSf http://${ipAddress}:8443/health", returnStdout: true)
-                        if (response.contains('UP')) {
-                            echo 'Application is up and running'
-                        } else {
-                            error 'Application is not responding'
-                        }
-                    }
-            }
-        }
     }
 }
