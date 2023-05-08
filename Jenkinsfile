@@ -17,6 +17,8 @@ pipeline {
         }
         stage('Unit Test') {
             steps {
+                sh 'sudo -nS lsof -i :8433 || true'
+                sh 'sudo -nS kill -9 `sudo -nS lsof -t -i:8433` || true'
                 // Run your unit tests using Maven
                 echo 'Running unit tests with Maven'
                 sh 'mvn clean test'
@@ -38,22 +40,33 @@ pipeline {
             sh 'sudo nohup java -jar target/teamGenerator-0.0.1-SNAPSHOT.jar &'
             }
         }
-        stage('Health Check') {
-            steps {
-                 retry(5){
-                    script {
-                        def ipAddress = sh(script: 'curl -sSf http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
-                        def response = sh(script: "curl -sSf http://${ipAddress}:8443/health", returnStdout: true)
-                        if (response.contains('UP')) {
-                            echo 'Application is up and running'
-                        } else {
-                            error 'Application is not responding'
-                        }
-                        sleep 30000
+stage('Health Check') {
+    steps {
+        script {
+            def retries = 5
+            def retryInterval = 30
+
+            def ipAddress = sh(script: 'curl -sSf http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
+
+            timeout(time: retries * retryInterval, unit: 'SECONDS') {
+                for (int i = 0; i < retries; i++) {
+                    def response = sh(script: "curl -sSf http://${ipAddress}:8443/health", returnStdout: true)
+                    if (response.contains('UP')) {
+                        echo 'Application is up and running'
+                        break
+                    } else {
+                        echo "Health check failed, retrying in ${retryInterval} seconds..."
+                        sleep retryInterval
                     }
                 }
             }
+
+            if (!response.contains('UP')) {
+                error 'Application is not responding'
+            }
         }
+    }
+}
 
     }
 }
