@@ -14,6 +14,7 @@ public class TeamGenerateController {
     @Autowired
     private GenerateGroupService generateGroupService;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/generate")
     @ResponseBody
     @ResponseStatus(code = HttpStatus.OK)
